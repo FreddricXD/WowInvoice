@@ -92,3 +92,15 @@
 .page-header h1 {
     font-weight: 700;
 }
+
+.empty-state {
+    text-align: center;
+    padding: 3rem 1.5rem;
+    background: #f8fafc;
+    border-radius: 1rem;
+    border: 2px dashed #e2e8f0;
+}
+
+.empty-state h3 {
+    font-weight: 600;
+}

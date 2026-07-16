@@ -1,0 +1,65 @@
+@model WowInvoice.Web.Models.Entities.Customer
+@{
+    ViewData["Title"] = Model.Name;
+}
+
+<div class="page-header d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+    <div>
+        <h1>@Model.Name</h1>
+        <p class="text-muted mb-0">@Model.Email</p>
+    </div>
+    <div class="d-flex gap-2">
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-secondary">Edit</a>
+        <a asp-controller="Invoices" asp-action="Create" asp-route-customerId="@Model.Id" class="btn btn-primary">Create Invoice</a>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-md-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <h5 class="card-title">Contact Details</h5>
+                <dl class="mb-0">
+                    <dt>Company</dt>
+                    <dd>@(Model.Company ?? "—")</dd>
+                    <dt>Phone</dt>
+                    <dd>@(Model.Phone ?? "—")</dd>
+                    <dt>Address</dt>
+                    <dd>@(Model.Address ?? "—")</dd>
+                    <dt>Member Since</dt>
+                    <dd>@Model.CreatedAt.ToString("MMM dd, yyyy")</dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <h5 class="card-title">Invoices (@Model.Invoices.Count)</h5>
+                @if (!Model.Invoices.Any())
+                {
+                    <p class="text-muted">No invoices for this customer yet.</p>
+                }
+                else
+                {
+                    <ul class="list-group list-group-flush">
+                        @foreach (var invoice in Model.Invoices.OrderByDescending(i => i.IssueDate).Take(5))
+                        {
+                            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                <a asp-controller="Invoices" asp-action="Details" asp-route-id="@invoice.Id">@invoice.InvoiceNumber</a>
+                                <span class="badge status-@invoice.Status.ToString().ToLower()">@invoice.Status</span>
+                            </li>
+                        }
+                    </ul>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<form asp-action="Delete" asp-route-id="@Model.Id" method="post" class="mt-4" onsubmit="return confirm('Delete this customer?');">
+    @Html.AntiForgeryToken()
+    <button type="submit" class="btn btn-outline-danger btn-sm">Delete Customer</button>
+</form>
+
+<a asp-action="Index" class="d-inline-block mt-3">&larr; Back to customers</a>
