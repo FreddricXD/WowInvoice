@@ -50,10 +50,14 @@ var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
 {
+    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
     var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
     if (db.Database.IsRelational())
     {
+        logger.LogInformation("Applying database migrations...");
         db.Database.Migrate();
+        logger.LogInformation("Database migrations applied.");
     }
     else
     {
