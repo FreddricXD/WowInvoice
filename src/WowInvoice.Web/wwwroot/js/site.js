@@ -2,13 +2,19 @@
     const themeKey = 'wowinvoice-theme';
     const html = document.documentElement;
     const saved = localStorage.getItem(themeKey);
+
+    function applyTheme(theme) {
+        html.setAttribute('data-theme', theme);
+        html.setAttribute('data-bs-theme', theme);
+    }
+
     if (saved) {
-        html.setAttribute('data-theme', saved);
+        applyTheme(saved);
     }
 
     document.getElementById('theme-toggle')?.addEventListener('click', () => {
         const current = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-        html.setAttribute('data-theme', current);
+        applyTheme(current);
         localStorage.setItem(themeKey, current);
     });
 

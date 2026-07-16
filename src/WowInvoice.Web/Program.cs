@@ -1,8 +1,13 @@
+using System.Globalization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using WowInvoice.Web.Data;
 using WowInvoice.Web.Models.Entities;
 using WowInvoice.Web.Services;
+
+var malaysiaCulture = CultureInfo.GetCultureInfo("en-MY");
+CultureInfo.DefaultThreadCurrentCulture = malaysiaCulture;
+CultureInfo.DefaultThreadCurrentUICulture = malaysiaCulture;
 
 var builder = WebApplication.CreateBuilder(args);
 

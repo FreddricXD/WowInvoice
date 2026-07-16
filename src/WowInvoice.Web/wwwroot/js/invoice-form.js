@@ -7,7 +7,7 @@
     let lineIndex = lineItemsContainer.querySelectorAll('.line-item').length;
 
     function formatCurrency(value) {
-        return new Intl.NumberFormat(undefined, { style: 'currency', currency: 'USD' }).format(value || 0);
+        return new Intl.NumberFormat('en-MY', { style: 'currency', currency: 'MYR' }).format(value || 0);
     }
 
     function recalculate() {
