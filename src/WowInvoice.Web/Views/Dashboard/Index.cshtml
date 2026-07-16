@@ -1,8 +1,148 @@
+@model WowInvoice.Web.Services.DashboardViewModel
 @{
     ViewData["Title"] = "Dashboard";
+    var maxRevenue = Model.MonthlyRevenue.Any() ? Model.MonthlyRevenue.Max(m => m.Amount) : 1;
+    if (maxRevenue == 0) maxRevenue = 1;
 }
 
-<div class="page-header">
-    <h1>Dashboard</h1>
-    <p class="text-muted">Welcome to WowInvoice. Your workspace is ready.</p>
+<div class="page-header d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+    <div>
+        <h1>Dashboard</h1>
+        <p class="text-muted mb-0">Your billing command center</p>
+    </div>
+    <div class="d-flex gap-2">
+        <a asp-controller="Invoices" asp-action="Create" class="btn btn-primary">+ New Invoice</a>
+        <a asp-controller="Customers" asp-action="Create" class="btn btn-outline-secondary">+ Customer</a>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-sm-6 col-xl-3">
+        <div class="kpi-card kpi-revenue animate-in">
+            <div class="kpi-icon">$</div>
+            <div class="kpi-value">@Model.PaidRevenue.ToString("C0")</div>
+            <div class="kpi-label">Paid Revenue</div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="kpi-card kpi-outstanding animate-in" style="animation-delay: 0.1s">
+            <div class="kpi-icon">!</div>
+            <div class="kpi-value">@Model.OutstandingAmount.ToString("C0")</div>
+            <div class="kpi-label">Outstanding</div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="kpi-card kpi-invoices animate-in" style="animation-delay: 0.2s">
+            <div class="kpi-icon">#</div>
+            <div class="kpi-value">@Model.TotalInvoices</div>
+            <div class="kpi-label">Total Invoices</div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="kpi-card kpi-customers animate-in" style="animation-delay: 0.3s">
+            <div class="kpi-icon">@Model.TotalCustomers</div>
+            <div class="kpi-value">@Model.OverdueCount</div>
+            <div class="kpi-label">Overdue Invoices</div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-7">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <h5 class="card-title mb-4">Revenue Trend</h5>
+                @if (!Model.MonthlyRevenue.Any())
+                {
+                    <div class="empty-state py-4">
+                        <p class="mb-0">Paid invoices will appear here as a revenue chart.</p>
+                    </div>
+                }
+                else
+                {
+                    <div class="revenue-chart">
+                        @foreach (var month in Model.MonthlyRevenue)
+                        {
+                            var height = (double)(month.Amount / maxRevenue * 100);
+                            <div class="chart-bar-group">
+                                <div class="chart-bar" style="height: @(Math.Max(height, 4))%" title="@month.Amount.ToString("C")"></div>
+                                <span class="chart-label">@month.Label</span>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-5">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <h5 class="card-title mb-4">Invoice Status</h5>
+                @if (!Model.StatusBreakdown.Any())
+                {
+                    <p class="text-muted">No invoices yet.</p>
+                }
+                else
+                {
+                    @foreach (var item in Model.StatusBreakdown)
+                    {
+                        var pct = Model.TotalInvoices > 0 ? (item.Count * 100.0 / Model.TotalInvoices) : 0;
+                        <div class="status-bar mb-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span class="badge status-@item.Status.ToString().ToLower()">@item.Status</span>
+                                <span class="text-muted">@item.Count</span>
+                            </div>
+                            <div class="progress" style="height: 6px;">
+                                <div class="progress-bar status-bar-@item.Status.ToString().ToLower()" style="width: @pct%"></div>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow-sm mt-4">
+    <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="card-title mb-0">Recent Invoices</h5>
+            <a asp-controller="Invoices" asp-action="Index">View all</a>
+        </div>
+        @if (!Model.RecentInvoices.Any())
+        {
+            <div class="empty-state py-3">
+                <p class="mb-2">No invoices yet. Create your first one!</p>
+                <a asp-controller="Invoices" asp-action="Create" class="btn btn-primary btn-sm">Create Invoice</a>
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Invoice</th>
+                            <th>Customer</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th class="text-end">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var inv in Model.RecentInvoices)
+                        {
+                            <tr>
+                                <td><a asp-controller="Invoices" asp-action="Details" asp-route-id="@inv.Id">@inv.InvoiceNumber</a></td>
+                                <td>@inv.CustomerName</td>
+                                <td>@inv.IssueDate.ToString("MMM dd")</td>
+                                <td><span class="badge status-@inv.Status.ToString().ToLower()">@inv.Status</span></td>
+                                <td class="text-end fw-semibold">@inv.GrandTotal.ToString("C")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
 </div>

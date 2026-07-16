@@ -36,6 +36,7 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddScoped<InvoiceNumberService>();
 builder.Services.AddScoped<OverdueInvoiceService>();
+builder.Services.AddScoped<DashboardService>();
 
 var app = builder.Build();
 
