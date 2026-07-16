@@ -44,7 +44,7 @@ public class InvoiceCalculationServiceTests
     [Fact]
     public void Preview_MatchesRecalculate()
     {
-        var lines = new[] { (Quantity: 3m, UnitPrice: 25m), (Quantity: 2m, UnitPrice: 10m) };
+        var lines = new[] { (Quantity: 3, UnitPrice: 25m), (Quantity: 2, UnitPrice: 10m) };
         var preview = InvoiceCalculationService.Preview(lines, taxRate: 8m, discountAmount: 2m);
 
         var invoice = new Invoice

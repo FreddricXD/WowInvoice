@@ -301,9 +301,9 @@ public class InvoicesController : Controller
     }
 
     [HttpGet]
-    public IActionResult PreviewTotals(decimal taxRate, decimal discountAmount, [FromQuery] List<decimal> quantities, [FromQuery] List<decimal> unitPrices)
+    public IActionResult PreviewTotals(decimal taxRate, decimal discountAmount, [FromQuery] List<int> quantities, [FromQuery] List<decimal> unitPrices)
     {
-        var lines = new List<(decimal Quantity, decimal UnitPrice)>();
+        var lines = new List<(int Quantity, decimal UnitPrice)>();
         var count = Math.Min(quantities.Count, unitPrices.Count);
         for (var i = 0; i < count; i++)
         {
