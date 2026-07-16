@@ -4,12 +4,12 @@
 
 <div class="row g-3">
     <div class="col-md-6">
-        <label asp-for="Name" class="form-label"></label>
+        <label asp-for="Name" class="form-label required-label"></label>
         <input asp-for="Name" class="form-control" maxlength="120" />
         <span asp-validation-for="Name" class="text-danger"></span>
     </div>
     <div class="col-md-6">
-        <label asp-for="Email" class="form-label"></label>
+        <label asp-for="Email" class="form-label required-label"></label>
         <input asp-for="Email" class="form-control" maxlength="160" />
         <span asp-validation-for="Email" class="text-danger"></span>
     </div>

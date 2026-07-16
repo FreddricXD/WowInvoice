@@ -182,6 +182,11 @@ body {
     box-shadow: 0 0 0 0.2rem rgba(99,102,241,0.25);
 }
 
+.required-label::after {
+    content: " *";
+    color: #dc3545;
+}
+
 .btn-primary {
     background: linear-gradient(135deg, #6366f1, #8b5cf6);
     border: none;
