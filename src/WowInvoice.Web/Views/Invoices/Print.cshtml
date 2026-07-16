@@ -1,0 +1,101 @@
+@model WowInvoice.Web.Models.Entities.Invoice
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>@Model.InvoiceNumber - WowInvoice</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <style>
+        body { font-family: 'Segoe UI', system-ui, sans-serif; padding: 2rem; color: #1e293b; }
+        .print-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 3px solid #6366f1; }
+        .print-logo { width: 48px; height: 48px; background: linear-gradient(135deg, #6366f1, #a855f7); color: white; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-weight: 700; }
+        .print-brand { display: flex; align-items: center; gap: 1rem; }
+        .print-brand h1 { font-size: 1.5rem; margin: 0; font-weight: 700; }
+        .totals { max-width: 280px; margin-left: auto; }
+        @@media print { body { padding: 0; } .no-print { display: none; } }
+    </style>
+</head>
+<body>
+    <div class="no-print mb-3">
+        <button onclick="window.print()" class="btn btn-primary btn-sm">Print</button>
+    </div>
+
+    <div class="print-header">
+        <div class="print-brand">
+            <div class="print-logo">WI</div>
+            <div>
+                <h1>INVOICE</h1>
+                <div class="text-muted">@Model.InvoiceNumber</div>
+            </div>
+        </div>
+        <div class="text-end">
+            <div><strong>From:</strong> @Model.User.DisplayName</div>
+            <div class="text-muted">@Model.User.Email</div>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-6">
+            <strong>Bill To</strong>
+            <div>@Model.Customer.Name</div>
+            @if (!string.IsNullOrWhiteSpace(Model.Customer.Company))
+            {
+                <div>@Model.Customer.Company</div>
+            }
+            <div>@Model.Customer.Email</div>
+            @if (!string.IsNullOrWhiteSpace(Model.Customer.Address))
+            {
+                <div class="text-muted">@Model.Customer.Address</div>
+            }
+        </div>
+        <div class="col-6 text-end">
+            <div><strong>Issue Date:</strong> @Model.IssueDate.ToString("MMMM dd, yyyy")</div>
+            <div><strong>Due Date:</strong> @Model.DueDate.ToString("MMMM dd, yyyy")</div>
+            <div><strong>Status:</strong> @Model.Status</div>
+        </div>
+    </div>
+
+    <table class="table table-bordered">
+        <thead class="table-light">
+            <tr>
+                <th>Description</th>
+                <th class="text-end">Qty</th>
+                <th class="text-end">Unit Price</th>
+                <th class="text-end">Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.LineItems)
+            {
+                <tr>
+                    <td>@item.Description</td>
+                    <td class="text-end">@item.Quantity</td>
+                    <td class="text-end">@item.UnitPrice.ToString("C")</td>
+                    <td class="text-end">@item.LineTotal.ToString("C")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="totals">
+        <div class="d-flex justify-content-between"><span>Subtotal</span><span>@Model.Subtotal.ToString("C")</span></div>
+        <div class="d-flex justify-content-between"><span>Tax (@Model.TaxRate%)</span><span>@Model.TaxAmount.ToString("C")</span></div>
+        @if (Model.DiscountAmount > 0)
+        {
+            <div class="d-flex justify-content-between"><span>Discount</span><span>-@Model.DiscountAmount.ToString("C")</span></div>
+        }
+        <div class="d-flex justify-content-between fw-bold fs-5 mt-2 border-top pt-2"><span>Total Due</span><span>@Model.GrandTotal.ToString("C")</span></div>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(Model.Notes))
+    {
+        <div class="mt-4">
+            <strong>Notes</strong>
+            <p>@Model.Notes</p>
+        </div>
+    }
+</body>
+</html>

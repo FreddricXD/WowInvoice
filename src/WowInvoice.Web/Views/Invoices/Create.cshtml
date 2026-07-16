@@ -1,0 +1,25 @@
+@model InvoiceFormViewModel
+@{
+    ViewData["Title"] = "New Invoice";
+}
+
+<div class="page-header mb-4">
+    <h1>New Invoice</h1>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <form asp-action="Create" method="post" id="invoice-form">
+            <partial name="_FormFields" model="Model" />
+            <div class="d-flex gap-2 mt-4">
+                <button type="submit" class="btn btn-primary">Create Invoice</button>
+                <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/invoice-form.js" asp-append-version="true"></script>
+}

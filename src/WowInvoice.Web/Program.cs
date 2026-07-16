@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using WowInvoice.Web.Data;
 using WowInvoice.Web.Models.Entities;
+using WowInvoice.Web.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,6 +33,9 @@ builder.Services.ConfigureApplicationCookie(options =>
 });
 
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddScoped<InvoiceNumberService>();
+builder.Services.AddScoped<OverdueInvoiceService>();
 
 var app = builder.Build();
 

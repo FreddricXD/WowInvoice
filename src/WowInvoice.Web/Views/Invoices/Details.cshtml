@@ -1,0 +1,140 @@
+@model WowInvoice.Web.Models.Entities.Invoice
+@using WowInvoice.Web.Models.Enums
+@{
+    ViewData["Title"] = Model.InvoiceNumber;
+    var allowedTransitions = Model.Status switch
+    {
+        InvoiceStatus.Draft => new[] { InvoiceStatus.Sent, InvoiceStatus.Cancelled },
+        InvoiceStatus.Sent => new[] { InvoiceStatus.Paid, InvoiceStatus.Cancelled },
+        InvoiceStatus.Overdue => new[] { InvoiceStatus.Paid, InvoiceStatus.Cancelled },
+        _ => Array.Empty<InvoiceStatus>()
+    };
+}
+
+<div class="page-header d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+    <div>
+        <h1>@Model.InvoiceNumber</h1>
+        <p class="text-muted mb-0">@Model.Customer.Name</p>
+    </div>
+    <div class="d-flex gap-2 flex-wrap">
+        <a asp-action="Print" asp-route-id="@Model.Id" class="btn btn-outline-secondary" target="_blank">Print</a>
+        @if (Model.Status is not (InvoiceStatus.Paid or InvoiceStatus.Cancelled))
+        {
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary">Edit</a>
+        }
+    </div>
+</div>
+
+@if (TempData["Success"] is string success)
+{
+    <div class="alert alert-success">@success</div>
+}
+@if (TempData["Error"] is string error)
+{
+    <div class="alert alert-danger">@error</div>
+}
+
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-4">
+                    <div>
+                        <span class="badge status-@Model.Status.ToString().ToLower() fs-6">@Model.Status</span>
+                    </div>
+                    <div class="text-end text-muted">
+                        <div>Issued: @Model.IssueDate.ToString("MMM dd, yyyy")</div>
+                        <div>Due: @Model.DueDate.ToString("MMM dd, yyyy")</div>
+                    </div>
+                </div>
+
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Description</th>
+                            <th class="text-end">Qty</th>
+                            <th class="text-end">Unit Price</th>
+                            <th class="text-end">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.LineItems)
+                        {
+                            <tr>
+                                <td>@item.Description</td>
+                                <td class="text-end">@item.Quantity</td>
+                                <td class="text-end">@item.UnitPrice.ToString("C")</td>
+                                <td class="text-end">@item.LineTotal.ToString("C")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+                <div class="invoice-totals ms-auto" style="max-width: 280px;">
+                    <div class="d-flex justify-content-between"><span>Subtotal</span><span>@Model.Subtotal.ToString("C")</span></div>
+                    <div class="d-flex justify-content-between"><span>Tax (@Model.TaxRate%)</span><span>@Model.TaxAmount.ToString("C")</span></div>
+                    <div class="d-flex justify-content-between"><span>Discount</span><span>-@Model.DiscountAmount.ToString("C")</span></div>
+                    <div class="d-flex justify-content-between fw-bold fs-5 mt-2 border-top pt-2"><span>Total</span><span>@Model.GrandTotal.ToString("C")</span></div>
+                </div>
+
+                @if (!string.IsNullOrWhiteSpace(Model.Notes))
+                {
+                    <div class="mt-4">
+                        <strong>Notes</strong>
+                        <p class="text-muted mb-0">@Model.Notes</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        @if (allowedTransitions.Length > 0)
+        {
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Update Status</h5>
+                    @foreach (var status in allowedTransitions)
+                    {
+                        <form asp-action="UpdateStatus" method="post" class="mb-2">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="InvoiceId" value="@Model.Id" />
+                            <input type="hidden" name="NewStatus" value="@status" />
+                            <button type="submit" class="btn btn-sm w-100 btn-outline-@(status == InvoiceStatus.Paid ? "success" : status == InvoiceStatus.Cancelled ? "danger" : "primary")">
+                                Mark as @status
+                            </button>
+                        </form>
+                    }
+                </div>
+            </div>
+        }
+
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">Status History</h5>
+                @if (!Model.StatusHistory.Any())
+                {
+                    <p class="text-muted mb-0">No history yet.</p>
+                }
+                else
+                {
+                    <ul class="timeline list-unstyled mb-0">
+                        @foreach (var entry in Model.StatusHistory)
+                        {
+                            <li class="timeline-item mb-3">
+                                <div class="fw-semibold">@entry.FromStatus → @entry.ToStatus</div>
+                                <div class="text-muted small">@entry.ChangedAt.ToString("MMM dd, yyyy HH:mm")</div>
+                                @if (!string.IsNullOrWhiteSpace(entry.Note))
+                                {
+                                    <div class="small">@entry.Note</div>
+                                }
+                            </li>
+                        }
+                    </ul>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<a asp-action="Index" class="d-inline-block mt-3">&larr; Back to invoices</a>

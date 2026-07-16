@@ -1,0 +1,84 @@
+@model IEnumerable<InvoiceListItemViewModel>
+@using WowInvoice.Web.Models.Enums
+@{
+    ViewData["Title"] = "Invoices";
+    var currentStatus = ViewData["Status"] as InvoiceStatus?;
+}
+
+<div class="page-header d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+    <div>
+        <h1>Invoices</h1>
+        <p class="text-muted mb-0">Create, track, and manage billing</p>
+    </div>
+    <a asp-action="Create" class="btn btn-primary">+ New Invoice</a>
+</div>
+
+@if (TempData["Success"] is string success)
+{
+    <div class="alert alert-success">@success</div>
+}
+@if (TempData["Error"] is string error)
+{
+    <div class="alert alert-danger">@error</div>
+}
+
+<form method="get" class="row g-2 mb-3">
+    <div class="col-md-5">
+        <input type="search" name="search" value="@ViewData["Search"]" class="form-control" placeholder="Search invoice # or customer..." />
+    </div>
+    <div class="col-md-3">
+        <select name="status" class="form-select">
+            <option value="">All statuses</option>
+            @foreach (InvoiceStatus s in Enum.GetValues<InvoiceStatus>())
+            {
+                <option value="@s" selected="@(currentStatus == s)">@s</option>
+            }
+        </select>
+    </div>
+    <div class="col-auto">
+        <button type="submit" class="btn btn-outline-secondary">Filter</button>
+    </div>
+</form>
+
+@if (!Model.Any())
+{
+    <div class="empty-state">
+        <h3>No invoices yet</h3>
+        <p>Create your first invoice to start getting paid.</p>
+        <a asp-action="Create" class="btn btn-primary">Create Invoice</a>
+    </div>
+}
+else
+{
+    <div class="table-responsive card shadow-sm">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th>Invoice #</th>
+                    <th>Customer</th>
+                    <th>Issue Date</th>
+                    <th>Due Date</th>
+                    <th>Status</th>
+                    <th class="text-end">Total</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var invoice in Model)
+                {
+                    <tr>
+                        <td><strong>@invoice.InvoiceNumber</strong></td>
+                        <td>@invoice.CustomerName</td>
+                        <td>@invoice.IssueDate.ToString("MMM dd, yyyy")</td>
+                        <td>@invoice.DueDate.ToString("MMM dd, yyyy")</td>
+                        <td><span class="badge status-@invoice.Status.ToString().ToLower()">@invoice.Status</span></td>
+                        <td class="text-end fw-semibold">@invoice.GrandTotal.ToString("C")</td>
+                        <td class="text-end">
+                            <a asp-action="Details" asp-route-id="@invoice.Id" class="btn btn-sm btn-outline-primary">View</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
