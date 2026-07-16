@@ -1,5 +1,5 @@
-using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 using WowInvoice.Web.Models;
 
 namespace WowInvoice.Web.Controllers;
@@ -8,12 +8,12 @@ public class HomeController : Controller
 {
     public IActionResult Index()
     {
-        return View();
-    }
+        if (User.Identity?.IsAuthenticated == true)
+        {
+            return RedirectToAction("Index", "Dashboard");
+        }
 
-    public IActionResult Privacy()
-    {
-        return View();
+        return RedirectToAction("Login", "Account");
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
