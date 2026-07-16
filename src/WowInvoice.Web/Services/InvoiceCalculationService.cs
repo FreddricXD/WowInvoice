@@ -17,7 +17,7 @@ public static class InvoiceCalculationService
     }
 
     public static (decimal Subtotal, decimal TaxAmount, decimal GrandTotal) Preview(
-        IEnumerable<(decimal Quantity, decimal UnitPrice)> lines,
+        IEnumerable<(int Quantity, decimal UnitPrice)> lines,
         decimal taxRate,
         decimal discountAmount)
     {

@@ -14,7 +14,7 @@
         const quantities = [];
         const unitPrices = [];
         lineItemsContainer.querySelectorAll('.line-item').forEach(row => {
-            const qty = parseFloat(row.querySelector('[name$=".Quantity"]')?.value) || 0;
+            const qty = parseInt(row.querySelector('[name$=".Quantity"]')?.value, 10) || 0;
             const price = parseFloat(row.querySelector('[name$=".UnitPrice"]')?.value) || 0;
             quantities.push(qty);
             unitPrices.push(price);
@@ -54,22 +54,26 @@
         row.innerHTML = `
             <div class="col-md-5">
                 <label class="form-label">Description</label>
-                <input name="LineItems[${lineIndex}].Description" class="form-control" />
+                <input name="LineItems[${lineIndex}].Description" class="form-control" maxlength="200" required />
             </div>
             <div class="col-md-2">
                 <label class="form-label">Qty</label>
-                <input name="LineItems[${lineIndex}].Quantity" class="form-control calc-trigger" step="0.01" value="1" />
+                <input name="LineItems[${lineIndex}].Quantity" class="form-control calc-trigger input-int" type="text" inputmode="numeric" autocomplete="off" value="1" required data-val="true" data-val-required="Quantity is required." data-val-integeronly="true" data-val-range="Quantity must be at least 1." data-val-range-min="1" data-val-range-max="999999" />
             </div>
             <div class="col-md-3">
                 <label class="form-label">Unit Price</label>
-                <input name="LineItems[${lineIndex}].UnitPrice" class="form-control calc-trigger" step="0.01" value="0" />
+                <input name="LineItems[${lineIndex}].UnitPrice" class="form-control calc-trigger input-decimal" type="text" inputmode="decimal" autocomplete="off" value="0" required data-val="true" data-val-required="Unit price is required." data-val-decimalonly="true" data-val-range="Unit price must be greater than zero." data-val-range-min="0.01" data-val-range-max="999999999" />
             </div>
             <div class="col-md-2">
+                <label class="form-label d-none d-md-block">&nbsp;</label>
                 <button type="button" class="btn btn-outline-danger w-100 remove-line">Remove</button>
             </div>`;
         lineItemsContainer.appendChild(row);
         lineIndex++;
         updateRemoveButtons();
+        if (window.jQuery && jQuery.validator && jQuery.validator.unobtrusive) {
+            jQuery.validator.unobtrusive.parse(row);
+        }
         recalculate();
     }
 

@@ -55,7 +55,6 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
         builder.Entity<InvoiceLineItem>(entity =>
         {
-            entity.Property(l => l.Quantity).HasPrecision(18, 2);
             entity.Property(l => l.UnitPrice).HasPrecision(18, 2);
         });
 

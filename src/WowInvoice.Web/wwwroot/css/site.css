@@ -214,13 +214,24 @@ body {
 .kpi-revenue::before { background: linear-gradient(90deg, #22c55e, #16a34a); }
 .kpi-outstanding::before { background: linear-gradient(90deg, #f59e0b, #d97706); }
 .kpi-invoices::before { background: linear-gradient(90deg, #6366f1, #8b5cf6); }
-.kpi-customers::before { background: linear-gradient(90deg, #ef4444, #dc2626); }
+.kpi-overdue::before { background: linear-gradient(90deg, #ef4444, #dc2626); }
 
 .kpi-icon {
-    font-size: 1.25rem;
-    opacity: 0.5;
-    margin-bottom: 0.5rem;
+    width: 2.5rem;
+    height: 2.5rem;
+    margin-bottom: 0.75rem;
+    opacity: 0.85;
 }
+
+.kpi-icon svg {
+    width: 100%;
+    height: 100%;
+}
+
+.kpi-revenue .kpi-icon { color: #16a34a; }
+.kpi-outstanding .kpi-icon { color: #d97706; }
+.kpi-invoices .kpi-icon { color: #6366f1; }
+.kpi-overdue .kpi-icon { color: #dc2626; }
 
 .kpi-value {
     font-size: 1.75rem;
