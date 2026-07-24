@@ -40,7 +40,7 @@ public class InvoiceFormViewModel : IValidatableObject
     [Required(ErrorMessage = "Due date is required.")]
     [DataType(DataType.Date)]
     [Display(Name = "Due Date")]
-    public DateTime DueDate { get; set; } = DateTime.UtcNow.Date.AddDays(30);
+    public DateTime DueDate { get; set; }
 
     [Required(ErrorMessage = "Tax rate is required.")]
     [Range(0, 100, ErrorMessage = "Tax rate must be between 0 and 100.")]

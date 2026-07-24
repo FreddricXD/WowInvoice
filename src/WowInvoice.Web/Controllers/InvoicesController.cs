@@ -72,6 +72,7 @@ public class InvoicesController : Controller
     public async Task<IActionResult> Create(int? customerId)
     {
         var model = new InvoiceFormViewModel();
+        model.DueDate = InvoiceDefaults.DefaultDueDate(model.IssueDate);
         if (customerId.HasValue)
         {
             model.CustomerId = customerId.Value;
