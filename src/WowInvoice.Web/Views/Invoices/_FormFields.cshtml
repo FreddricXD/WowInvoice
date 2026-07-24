@@ -4,29 +4,29 @@
 
 <div class="row g-3 mb-4">
     <div class="col-md-6">
-        <label asp-for="CustomerId" class="form-label"></label>
+        <label asp-for="CustomerId" class="form-label required-label"></label>
         <select asp-for="CustomerId" asp-items="ViewBag.Customers" class="form-select">
             <option value="">-- Select customer --</option>
         </select>
         <span asp-validation-for="CustomerId" class="text-danger"></span>
     </div>
     <div class="col-md-3">
-        <label asp-for="IssueDate" class="form-label"></label>
+        <label asp-for="IssueDate" class="form-label required-label"></label>
         <input asp-for="IssueDate" type="date" class="form-control" />
         <span asp-validation-for="IssueDate" class="text-danger"></span>
     </div>
     <div class="col-md-3">
-        <label asp-for="DueDate" class="form-label"></label>
+        <label asp-for="DueDate" class="form-label required-label"></label>
         <input asp-for="DueDate" type="date" class="form-control" />
         <span asp-validation-for="DueDate" class="text-danger"></span>
     </div>
     <div class="col-md-3">
-        <label asp-for="TaxRate" class="form-label"></label>
+        <label asp-for="TaxRate" class="form-label required-label"></label>
         <input asp-for="TaxRate" class="form-control calc-trigger input-decimal" type="text" inputmode="decimal" autocomplete="off" data-val-decimalonly="true" />
         <span asp-validation-for="TaxRate" class="text-danger"></span>
     </div>
     <div class="col-md-3">
-        <label asp-for="DiscountAmount" class="form-label"></label>
+        <label asp-for="DiscountAmount" class="form-label required-label"></label>
         <input asp-for="DiscountAmount" class="form-control calc-trigger input-decimal" type="text" inputmode="decimal" autocomplete="off" data-val-decimalonly="true" />
         <span asp-validation-for="DiscountAmount" class="text-danger"></span>
     </div>
@@ -43,17 +43,17 @@
     {
         <div class="line-item row g-2 align-items-end mb-2">
             <div class="col-md-5">
-                <label asp-for="LineItems[i].Description" class="form-label"></label>
+                <label asp-for="LineItems[i].Description" class="form-label required-label"></label>
                 <input asp-for="LineItems[i].Description" class="form-control" maxlength="200" />
                 <span asp-validation-for="LineItems[i].Description" class="text-danger"></span>
             </div>
             <div class="col-md-2">
-                <label asp-for="LineItems[i].Quantity" class="form-label"></label>
+                <label asp-for="LineItems[i].Quantity" class="form-label required-label"></label>
                 <input asp-for="LineItems[i].Quantity" class="form-control calc-trigger input-int" type="text" inputmode="numeric" autocomplete="off" data-val-integeronly="true" />
                 <span asp-validation-for="LineItems[i].Quantity" class="text-danger"></span>
             </div>
             <div class="col-md-3">
-                <label asp-for="LineItems[i].UnitPrice" class="form-label"></label>
+                <label asp-for="LineItems[i].UnitPrice" class="form-label required-label"></label>
                 <input asp-for="LineItems[i].UnitPrice" class="form-control calc-trigger input-decimal" type="text" inputmode="decimal" autocomplete="off" data-val-decimalonly="true" />
                 <span asp-validation-for="LineItems[i].UnitPrice" class="text-danger"></span>
             </div>
@@ -68,8 +68,8 @@
 <button type="button" id="add-line" class="btn btn-outline-secondary btn-sm mt-2">+ Add Line Item</button>
 
 <div class="invoice-totals mt-4 p-3 bg-light rounded">
-    <div class="d-flex justify-content-between"><span>Subtotal</span><span id="preview-subtotal">$0.00</span></div>
-    <div class="d-flex justify-content-between"><span>Tax</span><span id="preview-tax">$0.00</span></div>
-    <div class="d-flex justify-content-between"><span>Discount</span><span id="preview-discount">$0.00</span></div>
-    <div class="d-flex justify-content-between fw-bold fs-5 mt-2"><span>Grand Total</span><span id="preview-total">$0.00</span></div>
+    <div class="d-flex justify-content-between"><span>Subtotal</span><span id="preview-subtotal">RM0.00</span></div>
+    <div class="d-flex justify-content-between"><span>Tax</span><span id="preview-tax">RM0.00</span></div>
+    <div class="d-flex justify-content-between"><span>Discount</span><span id="preview-discount">RM0.00</span></div>
+    <div class="d-flex justify-content-between fw-bold fs-5 mt-2"><span>Grand Total</span><span id="preview-total">RM0.00</span></div>
 </div>

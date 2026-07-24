@@ -7,7 +7,7 @@
     let lineIndex = lineItemsContainer.querySelectorAll('.line-item').length;
 
     function formatCurrency(value) {
-        return new Intl.NumberFormat(undefined, { style: 'currency', currency: 'USD' }).format(value || 0);
+        return new Intl.NumberFormat('en-MY', { style: 'currency', currency: 'MYR' }).format(value || 0);
     }
 
     function recalculate() {
@@ -53,15 +53,15 @@
         row.className = 'line-item row g-2 align-items-end mb-2';
         row.innerHTML = `
             <div class="col-md-5">
-                <label class="form-label">Description</label>
+                <label class="form-label required-label">Description</label>
                 <input name="LineItems[${lineIndex}].Description" class="form-control" maxlength="200" required />
             </div>
             <div class="col-md-2">
-                <label class="form-label">Qty</label>
+                <label class="form-label required-label">Qty</label>
                 <input name="LineItems[${lineIndex}].Quantity" class="form-control calc-trigger input-int" type="text" inputmode="numeric" autocomplete="off" value="1" required data-val="true" data-val-required="Quantity is required." data-val-integeronly="true" data-val-range="Quantity must be at least 1." data-val-range-min="1" data-val-range-max="999999" />
             </div>
             <div class="col-md-3">
-                <label class="form-label">Unit Price</label>
+                <label class="form-label required-label">Unit Price</label>
                 <input name="LineItems[${lineIndex}].UnitPrice" class="form-control calc-trigger input-decimal" type="text" inputmode="decimal" autocomplete="off" value="0" required data-val="true" data-val-required="Unit price is required." data-val-decimalonly="true" data-val-range="Unit price must be greater than zero." data-val-range-min="0.01" data-val-range-max="999999999" />
             </div>
             <div class="col-md-2">

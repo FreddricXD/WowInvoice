@@ -14,7 +14,7 @@ public class Invoice : IUserOwnedEntity
     public Customer Customer { get; set; } = null!;
 
     public DateTime IssueDate { get; set; } = DateTime.UtcNow.Date;
-    public DateTime DueDate { get; set; } = DateTime.UtcNow.Date.AddDays(30);
+    public DateTime DueDate { get; set; }
 
     public InvoiceStatus Status { get; set; } = InvoiceStatus.Draft;
 
